@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Animated,
-    Easing,
-    Switch,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, Easing, Switch, Alert } from 'react-native';
+
+// FIXME: temporary during build
+const API_URL = 'http://localhost:5001';
 
 interface AuthScreenProps {
     initialForm: 'login' | 'signup';
@@ -17,21 +11,76 @@ interface AuthScreenProps {
 const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
     const [selectedForm, setSelectedForm] = useState<'login' | 'signup' | null>(null);
     const [formHeight] = useState(new Animated.Value(0));
-
-    // idk yet wel see how to actually add these requidd checkboxes
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [isOver21, setIsOver21] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     useEffect(() => {
         setSelectedForm(initialForm);
         Animated.timing(formHeight, {
-            // 300 good atm, probs change to dynamic value == height of contents
             toValue: 300,
             duration: 500,
             easing: Easing.linear,
             useNativeDriver: false,
         }).start();
     }, [initialForm]);
+
+    /* TODO: move to auth later once setup complete */
+    const handleLogin = async () => {
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                Alert.alert('Success', result.message);
+            } else {
+                Alert.alert('Error', result.message);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An unexpected error occurred.');
+        }
+    };
+
+
+    const handleSignup = async () => {
+        if (!isOver21 || !agreedToTerms) {
+            Alert.alert('Error', 'You must confirm that you are over 21 and agree to the terms.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                }),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                Alert.alert('Success', result.message);
+            } else {
+                Alert.alert('Error', result.message);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An unexpected error occurred.');
+        }
+    };
+
 
     const renderForm = () => {
         if (!selectedForm) return null;
@@ -41,15 +90,47 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
                 {selectedForm === 'login' ? (
                     <>
                         <Text style={styles.loginPageH1}>Login</Text>
-                        <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" />
-                        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
+                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                            <Text style={styles.buttonText}>Login</Text>
+                        </TouchableOpacity>
                     </>
                 ) : (
                     <>
                         <Text style={styles.signUpPageH1}>Sign Up</Text>
-                        <TextInput style={styles.input} placeholder="Name" />
-                        <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" />
-                        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Name"
+                            value={name}
+                            onChangeText={setName}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
                         <View style={styles.checkboxContainer}>
                             <Switch value={isOver21} onValueChange={setIsOver21} />
                             <Text style={styles.checkboxLabel}>Yes, I am over 21</Text>
@@ -58,6 +139,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
                             <Switch value={agreedToTerms} onValueChange={setAgreedToTerms} />
                             <Text style={styles.checkboxLabel}>I agree to terms and conditions</Text>
                         </View>
+                        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                            <Text style={styles.buttonText}>Sign Up</Text>
+                        </TouchableOpacity>
                     </>
                 )}
             </Animated.View>
@@ -109,6 +193,16 @@ const styles = StyleSheet.create({
     },
     checkboxLabel: {
         marginLeft: 10,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
     },
 });
 

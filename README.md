@@ -21,7 +21,7 @@ WineLister is a comprehensive wine tracking application built with React Native.
 - **React Native**: Cross-platform development for iOS.
 - **Expo**: Simplified development and deployment.
 - **Redux**: State management for enhanced performance and scalability.
-- **Firebase**: Backend services including authentication, storage, and real-time database.
+- **Supabase**: Backend services including authentication, storage, and real-time database.
 
 ## 📦 Installation
 
