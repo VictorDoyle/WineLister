@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import AuthScreen from '../components/AuthScreen';
+import AuthScreen from '../pages/AuthScreen';
 
+// move to components later cus no need in app
 export default function AuthPage() {
-    const { type } = useLocalSearchParams(); // get the query parameter
+    const { type } = useLocalSearchParams();
     const [initialForm, setInitialForm] = useState<'login' | 'signup'>('login');
 
     useEffect(() => {
@@ -14,5 +15,5 @@ export default function AuthPage() {
         }
     }, [type]);
 
-    return <AuthScreen initialForm={initialForm} />;
+    return <AuthScreen mode={initialForm} />;
 }

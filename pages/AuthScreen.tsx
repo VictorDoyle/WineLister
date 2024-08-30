@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, Easing, Switch, Alert } from 'react-native';
 
-// FIXME: temporary during build
-const API_URL = 'http://localhost:5001';
+// FIXME: temp during build
+import { API_URL } from '@/config/config';
 
-interface AuthScreenProps {
-    initialForm: 'login' | 'signup';
-}
+//FIXME: move to type file and refactor
+type AuthScreenProps = {
+    mode: 'login' | 'signup';
+};
 
-const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
+const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
     const [selectedForm, setSelectedForm] = useState<'login' | 'signup' | null>(null);
     const [formHeight] = useState(new Animated.Value(0));
     const [email, setEmail] = useState('');
@@ -18,14 +19,14 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     useEffect(() => {
-        setSelectedForm(initialForm);
+        setSelectedForm(mode); // change form based on login or signup  origin click
         Animated.timing(formHeight, {
             toValue: 300,
             duration: 500,
             easing: Easing.linear,
             useNativeDriver: false,
         }).start();
-    }, [initialForm]);
+    }, [mode]);
 
     /* TODO: move to auth later once setup complete */
     const handleLogin = async () => {
