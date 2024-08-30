@@ -40,11 +40,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ initialForm }) => {
             <Animated.View style={[styles.formContainer, { height: formHeight }]}>
                 {selectedForm === 'login' ? (
                     <>
+                        <Text style={styles.loginPageH1}>Login</Text>
                         <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" />
                         <TextInput style={styles.input} placeholder="Password" secureTextEntry />
                     </>
                 ) : (
                     <>
+                        <Text style={styles.signUpPageH1}>Sign Up</Text>
                         <TextInput style={styles.input} placeholder="Name" />
                         <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" />
                         <TextInput style={styles.input} placeholder="Password" secureTextEntry />
@@ -82,6 +84,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         overflow: 'hidden',
+    },
+    loginPageH1: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    signUpPageH1: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
     },
     input: {
         height: 40,
