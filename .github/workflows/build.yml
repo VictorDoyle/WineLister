@@ -16,11 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js using nvm
-        uses: nvm-sh/nvm@v0.39.2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version:  # Read Node.js version from .nvmrc
-            file: .nvmrc
+          node-version: '20.17.0'
 
       - name: Install dependencies
         run: npm install
