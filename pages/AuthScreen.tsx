@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, Easing, Switch, Alert } from 'react-native';
-
-// FIXME: temp during build
 import { API_URL } from '@/config/config';
 
-//FIXME: move to type file and refactor
 type AuthScreenProps = {
     mode: 'login' | 'signup';
 };
@@ -12,23 +9,23 @@ type AuthScreenProps = {
 const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
     const [selectedForm, setSelectedForm] = useState<'login' | 'signup' | null>(null);
     const [formHeight] = useState(new Animated.Value(0));
+    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
     const [isOver21, setIsOver21] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
     useEffect(() => {
-        setSelectedForm(mode); // change form based on login or signup  origin click
+        setSelectedForm(mode);
         Animated.timing(formHeight, {
-            toValue: 300,
+            toValue: mode === 'login' ? 200 : 300,
             duration: 500,
             easing: Easing.linear,
             useNativeDriver: false,
         }).start();
     }, [mode]);
 
-    /* TODO: move to auth later once setup complete */
     const handleLogin = async () => {
         try {
             const response = await fetch(`${API_URL}/login`, {
@@ -37,21 +34,20 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email,
+                    username,
                     password,
                 }),
             });
             const result = await response.json();
             if (response.ok) {
-                Alert.alert('Success', result.message);
+                Alert.alert('Success', 'Login successful');
             } else {
-                Alert.alert('Error', result.message);
+                Alert.alert('Error', result.message || 'Failed to login');
             }
         } catch (error) {
             Alert.alert('Error', 'An unexpected error occurred.');
         }
     };
-
 
     const handleSignup = async () => {
         if (!isOver21 || !agreedToTerms) {
@@ -67,21 +63,21 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
                 },
                 body: JSON.stringify({
                     name,
+                    username,
                     email,
                     password,
                 }),
             });
             const result = await response.json();
             if (response.ok) {
-                Alert.alert('Success', result.message);
+                Alert.alert('Success', 'Signup successful');
             } else {
-                Alert.alert('Error', result.message);
+                Alert.alert('Error', result.message || 'Failed to signup');
             }
         } catch (error) {
             Alert.alert('Error', 'An unexpected error occurred.');
         }
     };
-
 
     const renderForm = () => {
         if (!selectedForm) return null;
@@ -93,10 +89,9 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
                         <Text style={styles.loginPageH1}>Login</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Email"
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
+                            placeholder="Username"
+                            value={username}
+                            onChangeText={setUsername}
                         />
                         <TextInput
                             style={styles.input}
@@ -117,6 +112,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ mode }) => {
                             placeholder="Name"
                             value={name}
                             onChangeText={setName}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Username"
+                            value={username}
+                            onChangeText={setUsername}
                         />
                         <TextInput
                             style={styles.input}
