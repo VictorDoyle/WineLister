@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@/config/config';
-import { RootStackParamList } from '../types/types'
 
 /* refactor to declare file */
 interface User {
@@ -18,7 +17,8 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ user, onSignOut }) => {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const router = useRouter();
+    const { userid } = useLocalSearchParams();
 
     const handleSignOut = async () => {
         try {
@@ -37,8 +37,11 @@ const HomePage: React.FC<HomePageProps> = ({ user, onSignOut }) => {
 
             <TouchableOpacity
                 style={styles.button}
-                //FIXME: this is gonna need proofing
-                onPress={() => navigation.navigate('profile', { userId: user.id })}
+            //FIXME: this is gonna need proofing
+            /*     onPress={() => router.push({
+                    pathname: '/profile/[userid]',
+                    params: { userid: userId }
+                })} */
             >
                 <Text style={styles.buttonText}>Go to Profile</Text>
             </TouchableOpacity>

@@ -7,7 +7,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{ title: 'Home' }} />  {/* Home n basic welcome */}
       <Stack.Screen name="auth" options={{ title: 'Authentication' }} /> {/* Auth Screen login/signup*/}
       <Stack.Screen name="homepage" options={{ title: 'Home Page' }} /> {/* Post-Login Home Page */}
-      <Stack.Screen name="profile" options={{ title: 'Profile Page' }} /> {/* Profile Page */}
+      <Stack.Screen name="profile/[userid]" options={{ title: 'Profile Page' }} /> {/* Dynamic Profile Page */}
     </Stack>
   );
 }
